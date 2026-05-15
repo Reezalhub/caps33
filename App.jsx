@@ -6,7 +6,7 @@ import Graph from "./pages/Graph";
 
 function App() {
   return (
-    <BrowserRouter basename="/caps33"> // Add basename for GitHub Pages
+    <BrowserRouter basename="/caps33">
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
