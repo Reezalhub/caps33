@@ -6,7 +6,7 @@ import Graph from "./pages/Graph";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/caps33">
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/home" element={<Home />} />
