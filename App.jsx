@@ -1,4 +1,6 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
+
+import Role from "./pages/Role";
 import Login from "./pages/Login";
 import Home from "./pages/Home";
 import List from "./pages/List";
@@ -8,9 +10,19 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<Login />} />
+        {/* ROLE PAGE */}
+        <Route path="/" element={<Role />} />
+
+        {/* LOGIN USER */}
+        <Route path="/login" element={<Login />} />
+
+        {/* HOME */}
         <Route path="/home" element={<Home />} />
+
+        {/* LIST */}
         <Route path="/list" element={<List />} />
+
+        {/* GRAPH */}
         <Route path="/graph" element={<Graph />} />
       </Routes>
     </BrowserRouter>
