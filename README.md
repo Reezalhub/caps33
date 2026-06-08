@@ -78,7 +78,7 @@ Website dashboard dirancang dengan pendekatan **mobile-first** menggunakan viewp
 
 ```
 ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐     ┌─────────┐
-│  Role   │ ──▶ │  Login  │ ──▶ │  Home   │ ──▶ │  List   │ ──▶ │  Graph  │
+│  Role   │ ──▶ │  Login  │ ──▶│  Home   │ ──▶ │  List  │ ──▶ │  Graph  │
 │ (/)     │     │ (/login)│     │ (/home) │     │ (/list) │     │ (/graph)│
 └─────────┘     └─────────┘     └─────────┘     └─────────┘     └─────────┘
                      │               │               │               │
@@ -153,44 +153,3 @@ Program utama `module/[Program] main.ino` ditulis untuk ESP32/Wokwi Simulator de
 cd website
 npm install
 ```
-
-### Menjalankan Development Server
-
-```bash
-npm run dev
-```
-
-Server akan berjalan di `http://localhost:5173` (default Vite).
-
-### Build untuk Produksi
-
-```bash
-npm run build
-```
-
-Output akan tersimpan di folder `dist/`.
-
----
-
-## 👥 Anggota Kelompok (Capstone-33)
-
-1. **[Nama Anggota 1]**
-2. **[Nama Anggota 2]**
-3. **[Nama Anggota 3]**
-4. **[Nama Anggota 4]**
-5. **[Nama Anggota 5]**
-
----
-
-## 📄 Lisensi
-
-Proyek ini merupakan bagian dari tugas akhir mata kuliah Capstone-33, Program Studi Ilmu Komputer, Institut Pertanian Bogor.
-
----
-
-## 🔗 Referensi Tambahan
-
-- **Poster:** `module/Poster_Capstone33_Automatic Mist Sprayer.pdf`
-- **Simulasi Wokwi:** `module/[Wokwi Project] Automatic Mist Sprayer [Datamatika].zip`
-- **RAB Proyek:** `module/[RAB]`
-- **Repository GitHub:** [github.com/Reezalhub/caps33](https://github.com/Reezalhub/caps33)
