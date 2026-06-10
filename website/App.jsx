@@ -8,7 +8,7 @@ import Graph from "./pages/Graph";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={import.meta.env.BASE_URL}>
       <Routes>
         {/* ROLE PAGE */}
         <Route path="/" element={<Role />} />
