@@ -1,21 +1,50 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 import logo from "../assets/logo ipb.png";
 
 const Login = () => {
   const nav = useNavigate();
 
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
-    if (!username || !password) {
-      alert("Username dan password harus diisi!");
+  const handleLogin = async () => {
+    if (!email || !password) {
+      alert("Email dan password harus diisi!");
+      return;
+    }
+
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    setLoading(false);
+
+    if (error) {
+      alert(error.message);
       return;
     }
 
     nav("/home");
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}${import.meta.env.VITE_BASE_URL}home`,
+      },
+    });
+    setLoading(false);
+
+    if (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -84,7 +113,7 @@ const Login = () => {
           top: "237px",
           left: "24px",
           width: "344px",
-          height: "230px",
+          height: "260px",
           background: "white",
           borderRadius: "10px",
           padding: "20px",
@@ -100,12 +129,11 @@ const Login = () => {
           LOGIN
         </div>
 
-        {/* Username */}
         <input
-          type="text"
-          placeholder="Username"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          type="email"
+          placeholder="Email"
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
           style={{
             width: "100%",
             height: "35px",
@@ -137,6 +165,7 @@ const Login = () => {
         {/* Button */}
         <button
           onClick={handleLogin}
+          disabled={loading}
           style={{
             width: "100%",
             height: "35px",
@@ -145,11 +174,29 @@ const Login = () => {
             background: "#1e4fa3",
             color: "white",
             border: "none",
-            cursor: "pointer",
+            cursor: loading ? "not-allowed" : "pointer",
             fontWeight: "bold",
           }}
         >
-          Login
+          {loading ? "Loading..." : "Login"}
+        </button>
+
+        <button
+          onClick={handleGoogleSignIn}
+          disabled={loading}
+          style={{
+            width: "100%",
+            height: "35px",
+            marginTop: "12px",
+            borderRadius: "10px",
+            background: "white",
+            color: "#333",
+            border: "1px solid #ccc",
+            cursor: loading ? "not-allowed" : "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          {loading ? "Loading..." : "Sign in with Google"}
         </button>
       </div>
 
