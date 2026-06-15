@@ -1,8 +1,14 @@
-# CAPS33 - Automatic Mist Sprayer
+# CAPSTONE 33: Automatic Mist Sprayer
 
-Proyek Tugas Akhir Mata Kuliah Capstone-33, Program Studi Ilmu Komputer, Institut Pertanian Bogor (IPB).
+Proyek Tugas Akhir Mata Kuliah KOM1402 Capstone 1, Program Studi Ilmu Komputer, Sekolah Sains Data, Matematika, dan Informatika, Institut Pertanian Bogor (IPB).
 
-Dosen Pembimbing: **Dr. Ir. Sri Wahjuni, M.T.**
+Dosen Mentor Proyek: **Dr. Ir. Sri Wahjuni, M.T.**
+
+Anggota:
+
+- **🛠️ Hardware dan IoT 🔋**: Muhammad Syafiq Romadhon G6401231079
+- **💻 UI/UX dan Frontend 🖼️**: Nabila Sayyidatul Aflah G6401231130
+- **🌐 Backend dan DevOps 📨**: Rizal Habibi G6401231152
 
 ---
 
