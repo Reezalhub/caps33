@@ -8,7 +8,7 @@ import Graph from "./pages/Graph";
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename="/caps33">
       <Routes>
         {/* ROLE PAGE */}
         <Route path="/" element={<Role />} />
