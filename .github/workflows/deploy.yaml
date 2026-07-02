@@ -30,6 +30,8 @@ jobs:
         run: cd website && npm run build
         env:
           VITE_BASE_URL: /caps33/
+          VITE_SUPABASE_URL: ${{ secrets.VITE_SUPABASE_URL }}
+          VITE_SUPABASE_ANON_KEY: ${{ secrets.VITE_SUPABASE_ANON_KEY }}
       
       - name: Deploy to gh-pages
         if: github.ref == 'refs/heads/master' && github.event_name == 'push'
