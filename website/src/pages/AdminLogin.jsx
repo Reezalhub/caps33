@@ -1,13 +1,14 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 import logo from "../assets/logo ipb.png";
 
-const Login = () => {
-  const nav = useNavigate();
-
+const AdminLogin = () => {
+  const navigate = useNavigate();
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const handleLogin = () => {
     if (!username || !password) {
@@ -15,7 +16,23 @@ const Login = () => {
       return;
     }
 
-    nav("/home");
+    navigate("/home", { replace: true });
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/caps33/`,
+      },
+    });
+
+    setLoading(false);
+
+    if (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -28,7 +45,6 @@ const Login = () => {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* Background abu */}
       <div
         style={{
           position: "absolute",
@@ -38,7 +54,6 @@ const Login = () => {
         }}
       />
 
-      {/* Header biru */}
       <div
         style={{
           position: "absolute",
@@ -48,19 +63,33 @@ const Login = () => {
         }}
       />
 
-      {/* Logo */}
       <img
         src={logo}
         alt="logo"
         style={{
           position: "absolute",
           top: "20px",
-          left: "20px",
+          left: "50px",
           width: "150px",
         }}
       />
 
-      {/* Title */}
+      <div
+        onClick={() => navigate("/")}
+        style={{
+          position: "absolute",
+          top: "25px",
+          left: "20px",
+          color: "white",
+          fontSize: "24px",
+          cursor: "pointer",
+          zIndex: 10,
+          fontWeight: "bold",
+        }}
+      >
+        ←
+      </div>
+
       <div
         style={{
           position: "absolute",
@@ -77,14 +106,13 @@ const Login = () => {
         Kelembapan
       </div>
 
-      {/* Card */}
       <div
         style={{
           position: "absolute",
           top: "237px",
           left: "24px",
           width: "344px",
-          height: "230px",
+          height: "260px",
           background: "white",
           borderRadius: "10px",
           padding: "20px",
@@ -97,13 +125,12 @@ const Login = () => {
             fontWeight: "bold",
           }}
         >
-          LOGIN
+          ADMIN LOGIN
         </div>
 
-        {/* Username */}
         <input
           type="text"
-          placeholder="Username"
+          placeholder="Username/Email (email direkomendasikan)"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={{
@@ -117,7 +144,6 @@ const Login = () => {
           }}
         />
 
-        {/* Password */}
         <input
           type="password"
           placeholder="Password"
@@ -134,7 +160,6 @@ const Login = () => {
           }}
         />
 
-        {/* Button */}
         <button
           onClick={handleLogin}
           style={{
@@ -149,11 +174,27 @@ const Login = () => {
             fontWeight: "bold",
           }}
         >
-          Login
+          Login Sebagai Admin
+        </button>
+
+        <button
+          onClick={handleGoogleSignIn}
+          style={{
+            width: "100%",
+            height: "35px",
+            marginTop: "10px",
+            borderRadius: "10px",
+            background: "white",
+            color: "#1e4fa3",
+            border: "1px solid #1e4fa3",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          {loading ? "Loading..." : "Masuk dengan Google"}
         </button>
       </div>
 
-      {/* Footer */}
       <div
         style={{
           position: "absolute",
@@ -173,4 +214,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default AdminLogin;

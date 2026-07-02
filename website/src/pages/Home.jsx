@@ -5,9 +5,11 @@ import irigatorIcon from "../assets/logo irigator.png";
 
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 const Home = () => {
   const [date, setDate] = useState("");
+  const [dropdownOpen, setDropdownOpen] = useState(false);
   const navigate = useNavigate();
 
   // REALTIME DATA
@@ -52,6 +54,11 @@ const Home = () => {
     navigate("/list", {
       state: { date },
     });
+  };
+
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    navigate("/login", { replace: true });
   };
 
   return (
@@ -115,20 +122,95 @@ const Home = () => {
 
       {/* BACK BUTTON */}
       <div
-      onClick={() => navigate(-1)}
-      style={{
-        position: "absolute",
-        top: "25px",
-        left: "20px",
-        color: "white",
-        fontSize: "24px",
-        cursor: "pointer",
-        zIndex: 10,
-        fontWeight: "bold",
+        onClick={() => navigate(-1)}
+        style={{
+          position: "absolute",
+          top: "25px",
+          left: "20px",
+          color: "white",
+          fontSize: "24px",
+          cursor: "pointer",
+          zIndex: 10,
+          fontWeight: "bold",
         }}
+      >
+        ←
+      </div>
+
+      {/* Top Right Profile Circle with Dropdown */}
+      <div style={{ position: "absolute", top: "25px", right: "20px", zIndex: 11 }}>
+        <div
+          onClick={() => setDropdownOpen(!dropdownOpen)}
+          style={{
+            width: "40px",
+            height: "40px",
+            borderRadius: "50%",
+            background: "#ffffff",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            cursor: "pointer",
+            fontWeight: "bold",
+            color: "#002a79",
+            fontSize: "18px",
+            boxShadow: "0px 2px 5px rgba(0,0,0,0.2)"
+          }}
         >
-          ←
+          U
+        </div>
+
+        {/* Dropdown Menu */}
+        {dropdownOpen && (
+          <div
+            style={{
+              position: "absolute",
+              top: "50px",
+              right: "0",
+              background: "white",
+              borderRadius: "8px",
+              boxShadow: "0px 4px 10px rgba(0,0,0,0.1)",
+              width: "180px",
+              overflow: "hidden",
+              zIndex: 12,
+            }}
+          >
+            <div
+              onClick={() => {
+                navigate("/settings");
+                setDropdownOpen(false);
+              }}
+              style={{
+                padding: "12px 16px",
+                cursor: "pointer",
+                borderBottom: "1px solid #eee",
+                fontSize: "14px",
+                color: "#333",
+              }}
+              onMouseEnter={(e) => (e.target.style.background = "#f5f5f5")}
+              onMouseLeave={(e) => (e.target.style.background = "white")}
+            >
+              Pengaturan Akun
+            </div>
+            <div
+              onClick={() => {
+                setDropdownOpen(false);
+                handleLogout();
+              }}
+              style={{
+                padding: "12px 16px",
+                cursor: "pointer",
+                fontSize: "14px",
+                color: "#dc3545",
+                fontWeight: "bold",
+              }}
+              onMouseEnter={(e) => (e.target.style.background = "#f5f5f5")}
+              onMouseLeave={(e) => (e.target.style.background = "white")}
+            >
+              Logout
+            </div>
           </div>
+        )}
+      </div>
 
       {/* CARD: STATUS */}
       <div
@@ -229,6 +311,8 @@ const Home = () => {
           </div>
         </div>
       </div>
+
+
 
       {/* CARD: FILTER */}
       <div

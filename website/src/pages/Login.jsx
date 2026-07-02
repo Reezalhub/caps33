@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { supabase } from "../supabaseClient";
 
 import logo from "../assets/logo ipb.png";
 
@@ -8,14 +9,61 @@ const Login = () => {
 
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (!username || !password) {
-      alert("Username dan password harus diisi!");
+      alert("Username/email dan password harus diisi!");
       return;
     }
 
-    nav("/home");
+    setLoading(true);
+
+    // Determine if the entered value looks like an email address.
+    let emailToUse = username.trim();
+    if (!emailToUse.includes("@")) {
+      // Not an email – look up the email associated with this username.
+      const { data, error: lookupError } = await supabase
+        .from("users")
+        .select("email")
+        .eq("username", emailToUse)
+        .single();
+      if (lookupError || !data) {
+        alert("Username tidak ditemukan atau terjadi kesalahan.");
+        setLoading(false);
+        return;
+      }
+      emailToUse = data.email;
+    }
+
+    const { error } = await supabase.auth.signInWithPassword({
+      email: emailToUse,
+      password,
+    });
+    setLoading(false);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    nav("/home", { replace: true });
+  };
+
+  const handleGoogleSignIn = async () => {
+    setLoading(true);
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+      options: {
+        redirectTo: `${window.location.origin}/caps33/`,
+      },
+    });
+
+    setLoading(false);
+
+    if (error) {
+      alert(error.message);
+    }
   };
 
   return (
@@ -49,33 +97,33 @@ const Login = () => {
       />
 
       {/* Logo */}
-            <img
-            src={logo}
-            alt="logo"
-            style={{
-              position: "absolute",
-              top: "20px",
-              left: "50px",
-              width: "150px",
-            }}
-            />
-      
-            {/* BACK BUTTON */}
-<div
-  onClick={() => nav(-1)}
-  style={{
-    position: "absolute",
-    top: "25px",
-    left: "20px",
-    color: "white",
-    fontSize: "24px",
-    cursor: "pointer",
-    zIndex: 10,
-    fontWeight: "bold",
-  }}
->
-  ←
-</div>
+      <img
+        src={logo}
+        alt="logo"
+        style={{
+          position: "absolute",
+          top: "20px",
+          left: "50px",
+          width: "150px",
+        }}
+      />
+
+      {/* BACK BUTTON */}
+      <div
+        onClick={() => nav("/")}
+        style={{
+          position: "absolute",
+          top: "25px",
+          left: "20px",
+          color: "white",
+          fontSize: "24px",
+          cursor: "pointer",
+          zIndex: 10,
+          fontWeight: "bold",
+        }}
+      >
+        ←
+      </div>
 
       {/* Title */}
       <div
@@ -101,7 +149,7 @@ const Login = () => {
           top: "237px",
           left: "24px",
           width: "344px",
-          height: "230px",
+          height: "300px",
           background: "white",
           borderRadius: "10px",
           padding: "20px",
@@ -117,10 +165,10 @@ const Login = () => {
           LOGIN
         </div>
 
-        {/* Username */}
+        {/* Username/Email */}
         <input
           type="text"
-          placeholder="Username"
+          placeholder="Username/Email (email direkomendasikan)"
           value={username}
           onChange={(e) => setUsername(e.target.value)}
           style={{
@@ -165,8 +213,43 @@ const Login = () => {
             cursor: "pointer",
             fontWeight: "bold",
           }}
+          disabled={loading}
         >
-          Login
+          {loading ? "Memproses..." : "Login"}
+        </button>
+
+        <button
+          onClick={() => nav("/register")}
+          style={{
+            width: "100%",
+            height: "35px",
+            marginTop: "10px",
+            borderRadius: "10px",
+            background: "white",
+            color: "#1e4fa3",
+            border: "1px solid #1e4fa3",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          Registrasi
+        </button>
+
+        <button
+          onClick={handleGoogleSignIn}
+          style={{
+            width: "100%",
+            height: "35px",
+            marginTop: "10px",
+            borderRadius: "10px",
+            background: "white",
+            color: "#1e4fa3",
+            border: "1px solid #1e4fa3",
+            cursor: "pointer",
+            fontWeight: "bold",
+          }}
+        >
+          {loading ? "Loading..." : "Masuk dengan Google"}
         </button>
       </div>
 

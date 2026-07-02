@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import logo from "../assets/logo ipb.png";
 import alertIcon from "../assets/logo alert.png";
 import normalIcon from "../assets/logo normal.png";
+import kelembapanIcon from "../assets/logo kelembapan.png";
 
 const List = () => {
   const location = useLocation();
@@ -13,6 +14,11 @@ const List = () => {
 
   const [menuOpen, setMenuOpen] = useState(false);
   const [dataList, setDataList] = useState([]);
+
+  // Calculate average humidity for display
+  const avgHumidity = dataList.length > 0
+    ? (dataList.reduce((sum, item) => sum + Number(item.field2 || 0), 0) / dataList.length).toFixed(1)
+    : "--";
 
   useEffect(() => {
     fetch(

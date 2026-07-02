@@ -4,47 +4,65 @@ import { supabase } from "../supabaseClient";
 
 import logo from "../assets/logo ipb.png";
 
-const Login = () => {
+const Register = () => {
   const nav = useNavigate();
-
+  const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
-    if (!email || !password) {
-      alert("Email dan password harus diisi!");
+  const handleRegister = async () => {
+    if (!username || !email || !password || !confirmPassword) {
+      alert("Semua field harus diisi!");
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      alert("Password dan ulang password tidak cocok.");
+      return;
+    }
+
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+      alert("Email tidak valid.");
       return;
     }
 
     setLoading(true);
-    const { error } = await supabase.auth.signInWithPassword({
-      email,
+
+    const { data: signUpData, error } = await supabase.auth.signUp({
+      email: email.trim(),
       password,
-    });
-    setLoading(false);
-
-    if (error) {
-      alert(error.message);
-      return;
-    }
-
-    nav("/home");
-  };
-
-  const handleGoogleSignIn = async () => {
-    setLoading(true);
-    const { error } = await supabase.auth.signInWithOAuth({
-      provider: "google",
       options: {
-        redirectTo: `${window.location.origin}${import.meta.env.VITE_BASE_URL}home`,
+        data: {
+          username: username.trim(),
+          full_name: username.trim(), // Menambahkan full_name agar tampil di "Display name" dashboard Supabase
+        },
       },
     });
+
     setLoading(false);
 
     if (error) {
       alert(error.message);
+      return;
     }
+
+    // Insert the username/email pair into a public profile table (e.g., public.users)
+    const { error: insertError } = await supabase.from("users").insert({
+      user_id: signUpData?.user?.id, // Mengambil ID dari auth.users
+      username: username.trim(),
+      email: email.trim(),
+    });
+
+    if (insertError) {
+      console.error("Failed to insert user profile:", insertError);
+      alert("Pendaftaran Auth berhasil, tapi gagal menyimpan data ke tabel users: " + insertError.message);
+    } else {
+      alert("Registrasi berhasil. Silakan periksa email Anda untuk konfirmasi dan kemudian masuk.");
+    }
+
+    nav("/login");
   };
 
   return (
@@ -57,7 +75,6 @@ const Login = () => {
         fontFamily: "Arial, sans-serif",
       }}
     >
-      {/* Background abu */}
       <div
         style={{
           position: "absolute",
@@ -67,7 +84,6 @@ const Login = () => {
         }}
       />
 
-      {/* Header biru */}
       <div
         style={{
           position: "absolute",
@@ -77,19 +93,33 @@ const Login = () => {
         }}
       />
 
-      {/* Logo */}
       <img
         src={logo}
         alt="logo"
         style={{
           position: "absolute",
           top: "20px",
-          left: "20px",
+          left: "50px",
           width: "150px",
         }}
       />
 
-      {/* Title */}
+      <div
+        onClick={() => nav(-1)}
+        style={{
+          position: "absolute",
+          top: "25px",
+          left: "20px",
+          color: "white",
+          fontSize: "24px",
+          cursor: "pointer",
+          zIndex: 10,
+          fontWeight: "bold",
+        }}
+      >
+        ←
+      </div>
+
       <div
         style={{
           position: "absolute",
@@ -106,28 +136,38 @@ const Login = () => {
         Kelembapan
       </div>
 
-      {/* Card */}
       <div
         style={{
           position: "absolute",
           top: "237px",
           left: "24px",
           width: "344px",
-          height: "260px",
+          minHeight: "320px",
           background: "white",
           borderRadius: "10px",
           padding: "20px",
           boxSizing: "border-box",
         }}
       >
-        <div
-          style={{
-            fontSize: "14px",
-            fontWeight: "bold",
-          }}
-        >
-          LOGIN
+        <div style={{ fontSize: "14px", fontWeight: "bold" }}>
+          REGISTRASI
         </div>
+
+        <input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          style={{
+            width: "100%",
+            height: "35px",
+            marginTop: "12px",
+            borderRadius: "15px",
+            border: "1px solid #ccc",
+            paddingLeft: "10px",
+            boxSizing: "border-box",
+          }}
+        />
 
         <input
           type="email"
@@ -145,7 +185,6 @@ const Login = () => {
           }}
         />
 
-        {/* Password */}
         <input
           type="password"
           placeholder="Password"
@@ -162,10 +201,24 @@ const Login = () => {
           }}
         />
 
-        {/* Button */}
+        <input
+          type="password"
+          placeholder="Ulang Password"
+          value={confirmPassword}
+          onChange={(e) => setConfirmPassword(e.target.value)}
+          style={{
+            width: "100%",
+            height: "35px",
+            marginTop: "12px",
+            borderRadius: "15px",
+            border: "1px solid #ccc",
+            paddingLeft: "10px",
+            boxSizing: "border-box",
+          }}
+        />
+
         <button
-          onClick={handleLogin}
-          disabled={loading}
+          onClick={handleRegister}
           style={{
             width: "100%",
             height: "35px",
@@ -174,33 +227,32 @@ const Login = () => {
             background: "#1e4fa3",
             color: "white",
             border: "none",
-            cursor: loading ? "not-allowed" : "pointer",
+            cursor: "pointer",
             fontWeight: "bold",
           }}
+          disabled={loading}
         >
-          {loading ? "Loading..." : "Login"}
+          {loading ? "Memproses..." : "Daftar"}
         </button>
 
         <button
-          onClick={handleGoogleSignIn}
-          disabled={loading}
+          onClick={() => nav("/login")}
           style={{
             width: "100%",
             height: "35px",
-            marginTop: "12px",
+            marginTop: "10px",
             borderRadius: "10px",
             background: "white",
-            color: "#333",
-            border: "1px solid #ccc",
-            cursor: loading ? "not-allowed" : "pointer",
+            color: "#1e4fa3",
+            border: "1px solid #1e4fa3",
+            cursor: "pointer",
             fontWeight: "bold",
           }}
         >
-          {loading ? "Loading..." : "Sign in with Google"}
+          Sudah punya akun? Login
         </button>
       </div>
 
-      {/* Footer */}
       <div
         style={{
           position: "absolute",
@@ -220,4 +272,4 @@ const Login = () => {
   );
 };
 
-export default Login;
+export default Register;
