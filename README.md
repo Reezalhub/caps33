@@ -8,7 +8,10 @@ Anggota:
 
 - **🛠️ Hardware dan IoT 🔋**: Muhammad Syafiq Romadhon G6401231079
 - **💻 UI/UX dan Frontend 🖼️**: Nabila Sayyidatul Aflah G6401231130
-- **🌐 Backend dan DevOps 📨**: Rizal Habibi G6401231152
+- **💾 Backend dan DevOps 📨**: Rizal Habibi G6401231152
+
+🌐 **Website:**  
+https://reezalhub.github.io/caps33/
 
 ---
 
